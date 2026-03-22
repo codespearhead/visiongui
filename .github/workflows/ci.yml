@@ -1,0 +1,108 @@
+name: Build Python Project
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+    types: [
+      opened,
+      synchronize,
+      reopened,
+      ready_for_review
+    ]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
+env:
+  # PYTHON
+  PYTHON_VERSION: '3.14'
+  PIP_ROOT_USER_ACTION: ignore
+  # POETRY
+  POETRY_VERSION: '2.3.4'
+  # PYTHONPATH so absolute imports work
+  PYTHONPATH: .
+
+jobs:
+  look_for_source_code_changes:
+    if: github.event_name != 'pull_request' || github.event.pull_request.draft == false
+    runs-on: ubuntu-latest
+    outputs:
+      run_tests: ${{ steps.filter.outputs.run_tests }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - id: filter
+        uses: dorny/paths-filter@v4
+        with:
+          filters: |
+            run_tests:
+              - 'src/**'
+              - 'test/**'
+              - 'poetry.lock'
+              - 'pyproject.toml'
+              - 'docker-compose.yml'
+              - 'Dockerfile'
+              - '.github/workflows/ci.yml'
+
+  lint:
+    timeout-minutes: 3
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Cache Poetry, pipx, and dependencies
+        uses: actions/cache@v5
+        with:
+          path: |
+            ~/.local/pipx
+            ~/.cache/pypoetry
+            ~/.cache/pip
+          key: setup-${{ runner.os }}-${{ env.PYTHON_VERSION }}-${{ env.POETRY_VERSION }}-${{ hashFiles('**/poetry.lock') }}
+          restore-keys: |
+            setup-${{ runner.os }}-${{ env.PYTHON_VERSION }}-
+
+      - name: Ensure Poetry is available
+        run: |
+          python -m pip install --upgrade pip pipx
+          pipx install poetry==${POETRY_VERSION}
+          echo "$(pipx environment --value PIPX_BIN_DIR)" >> $GITHUB_PATH
+
+      - name: Create virtual environment
+        run: python -m venv .venv
+
+      - name: Activate virtual environment and confirm it's active
+        run: |
+          source .venv/bin/activate
+          PYTHON_PATH=$(which python)
+          if [[ "$PYTHON_PATH" == *".venv"* ]]; then
+            echo "Python is using a .venv environment: $PYTHON_PATH"
+          else
+            echo "Python is NOT using a .venv environment: $PYTHON_PATH"
+            exit 1
+          fi
+
+      - name: Install dependencies
+        run: |
+          source .venv/bin/activate
+          poetry install --no-root --with format
+
+      - name: Check for successful installation
+        run: |
+          source .venv/bin/activate
+          poetry check
+
+      - name: Format and lint project
+        run: |
+          source .venv/bin/activate
+          poetry run python tasks/format.py --dry-run

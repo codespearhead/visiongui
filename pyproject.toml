@@ -1,0 +1,36 @@
+[project]
+name = "visiongui"
+version = "1.0.0"
+description = ""
+authors = [
+    {name = "Pedro Aguiar",email = "72931357+codespearhead@users.noreply.github.com"}
+]
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+    "psutil (>=7.2.2,<8.0.0)",
+    "pywinctl (>=0.4.1,<0.5.0)",
+    "mss (>=10.1.0,<11.0.0)",
+    "pynput (>=1.8.1,<2.0.0)",
+    "pillow (>=12.2.0,<13.0.0)",
+    "numpy (>=2.4.4,<3.0.0)",
+    "opencv-python (>=4.13.0.92,<5.0.0.0)"
+]
+
+[dependency-groups]
+test = [
+    "pytest (>=9.0.2,<10.0.0)"
+]
+format = [
+    "ruff (>=0.15.7,<0.16.0)"
+]
+
+
+[tool.poetry]
+packages = [
+    { include = "visiongui", from = "src" }
+]
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
