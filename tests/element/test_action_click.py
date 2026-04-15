@@ -13,8 +13,8 @@ from tests.fixtures.HasTestContextDesktopDriver import (
     HasTestContextDesktopDriver,
 )
 from tests.fixtures.setup_common_paths import setup_common_paths
-from src.visiongui.driver.DesktopDriverImplementation import (
-    DesktopDriverImplementation,
+from src.visiongui.driver.DesktopDriverWindowsImplementation import (
+    DesktopDriverWindowsImplementation,
 )
 from src.visiongui.driver.DesktopDriverInterface import (
     DesktopDriverInterface,
@@ -40,7 +40,7 @@ OS_PROCESS_KILL_TIMEOUT = int(os.environ["OS_PROCESS_KILL_TIMEOUT"])
 def setup(request: FixtureRequest) -> Generator[None]:
     self: HasTestContextDesktopDriver = request.instance
     setup_common_paths(request)
-    self.desktop_driver = DesktopDriverImplementation()
+    self.desktop_driver = DesktopDriverWindowsImplementation()
     node: Node = request.node
     self.test_case_name = node.name
     return

@@ -2,7 +2,9 @@ import os
 import re
 from pathlib import Path
 from PIL import Image, ImageDraw
-from visiongui.driver.DesktopDriverImplementation import DesktopDriverImplementation
+from visiongui.driver.DesktopDriverWindowsImplementation import (
+    DesktopDriverWindowsImplementation,
+)
 
 
 OS_PROCESS_KILL_TIMEOUT = 5
@@ -35,7 +37,7 @@ with open(dummy_gui_code_snippet__file_path, "wb") as f:
     f.write(dummy_gui_code_snippet.encode("utf-8"))
 
 
-desktop_driver = DesktopDriverImplementation()
+desktop_driver = DesktopDriverWindowsImplementation()
 
 desktop_driver.launch_process(cmd=["python", dummy_gui_code_snippet__file_path])
 desktop_window = desktop_driver.find_window(

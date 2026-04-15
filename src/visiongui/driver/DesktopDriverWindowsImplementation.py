@@ -17,7 +17,7 @@ from visiongui.element.DesktopElementInterface import (
 )
 
 
-class DesktopDriverImplementation(DesktopDriverInterface):
+class DesktopDriverWindowsImplementation(DesktopDriverInterface):
     def __init__(self):
         self._process: subprocess.Popen | None = None
         self._window: pywinctl.Window | None = None
