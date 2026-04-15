@@ -25,9 +25,8 @@ class DesktopDriverInterface(ABC):
     @abstractmethod
     def window(self, value: pywinctl.Window | None) -> None: ...
 
-    @staticmethod
     @abstractmethod
-    def launch_process(*, cmd: list[str]) -> subprocess.Popen: ...
+    def launch_process(self, *, cmd: list[str]) -> subprocess.Popen: ...
 
     @abstractmethod
     def find_window(
