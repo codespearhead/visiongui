@@ -12,6 +12,7 @@ from visiongui.driver.find_element_by_image import (
 from visiongui.driver.find_window import find_window
 from visiongui.driver.launch_process import launch_process
 from visiongui.driver.switch_to import switch_to
+from visiongui.driver.wait_for_window_to_disappear import wait_for_window_to_disappear
 from visiongui.element.DesktopElementInterface import (
     DesktopElementInterface,
 )
@@ -47,12 +48,21 @@ class DesktopDriverWindowsImplementation(DesktopDriverInterface):
         *,
         title,
         timeout: float,
-        should_exist: bool,
     ) -> pywinctl.Window:
         return find_window(
             title=title,
             timeout=timeout,
-            should_exist=should_exist,
+        )
+
+    def wait_for_window_to_disappear(
+        self,
+        *,
+        title,
+        timeout: float,
+    ) -> None:
+        return wait_for_window_to_disappear(
+            title=title,
+            timeout=timeout,
         )
 
     def find_element_by_image(

@@ -34,8 +34,15 @@ class DesktopDriverInterface(ABC):
         *,
         title,
         timeout: float,
-        should_exist: bool,
     ) -> pywinctl.Window: ...
+
+    @abstractmethod
+    def wait_for_window_to_disappear(
+        self,
+        *,
+        title,
+        timeout: float,
+    ) -> None: ...
 
     @abstractmethod
     def switch_to(self, *, target_window: pywinctl.Window) -> None: ...

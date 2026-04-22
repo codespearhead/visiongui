@@ -1,22 +1,29 @@
-from ..fixtures.HasTestContextDesktopDriver import HasTestContextDesktopDriver
-
 import os
 import re
+import subprocess
+import time
 from collections.abc import Generator
 from pathlib import Path
 
 import pytest
+import pywinctl
 from _pytest.fixtures import FixtureRequest
 from _pytest.nodes import Node
 
+from tests.fixtures.HasTestContextDesktopDriver import (
+    HasTestContextDesktopDriver,
+)
 from visiongui.driver.DesktopDriverWindowsImplementation import (
     DesktopDriverWindowsImplementation,
 )
-
 from visiongui.driver.DesktopDriverInterface import (
     DesktopDriverInterface,
 )
+from visiongui.driver.exception import (
+    ExceptionUnexpectedWindowFound,
+)
 
+TEST_OUTPUT_DIR = os.environ["TEST_OUTPUT_DIR"]
 OS_PROCESS_KILL_TIMEOUT = int(os.environ["OS_PROCESS_KILL_TIMEOUT"])
 
 
@@ -32,70 +39,58 @@ def setup(request: FixtureRequest) -> Generator[None]:
 @pytest.fixture(scope="function")
 def dummy_app_path(request: FixtureRequest, tmp_path: Path) -> Path:
     self: HasTestContextDesktopDriver = request.instance
-    title = self.test_case_name
+    test_case_name = self.test_case_name
     script = f"""
 import tkinter as tk
 root = tk.Tk()
-root.title('{title}')
+root.title('{test_case_name}')
 root.mainloop()
 """
-    file_path = os.path.join(str(tmp_path), f"{title}.py")
+    file_path = os.path.join(str(tmp_path), f"{test_case_name}.py")
     path = Path(file_path)
     path.write_text(script, encoding="utf-8")
     return path
 
 
-@pytest.fixture(scope="function")
-def stubborn_app_path(request: FixtureRequest, tmp_path: Path) -> Path:
-    self: HasTestContextDesktopDriver = request.instance
-    title = self.test_case_name
-    script = f"""
-import tkinter as tk
-def on_close():
-    pass
-root = tk.Tk()
-root.title('{title}')
-root.protocol("WM_DELETE_WINDOW", on_close)
-root.mainloop()
-"""
-    file_path = os.path.join(str(tmp_path), f"{title}_stubborn.py")
-    path = Path(file_path)
-    path.write_text(script, encoding="utf-8")
-    return path
+def launch_gui_subprocess(script_path: Path) -> subprocess.Popen:
+    proc = subprocess.Popen(["python", str(script_path)])
+    for _ in range(30):
+        if any(script_path.stem == w.title for w in pywinctl.getAllWindows()):
+            break
+        time.sleep(0.1)
+    return proc
 
 
-class TestCloseDesktopDriver:
+class TestWaitForWindowToDisappear:
     desktop_driver: DesktopDriverInterface
     test_case_name: str
 
-    def test_process_and_window_cleanup(self, dummy_app_path: Path) -> None:
+    def test_window_should_disappear_and_does(self, dummy_app_path: Path) -> None:
         self.desktop_driver.launch_process(cmd=["python", str(dummy_app_path)])
 
         self.desktop_driver.window = self.desktop_driver.find_window(
             title=re.compile(f"^{re.escape(self.test_case_name)}$"),
-            timeout=5,
+            timeout=3,
         )
-
-        assert self.desktop_driver.process is not None
-        assert self.desktop_driver.window is not None
 
         self.desktop_driver.close(OS_PROCESS_KILL_TIMEOUT=OS_PROCESS_KILL_TIMEOUT)
 
-        assert self.desktop_driver.process is None
-        assert self.desktop_driver.window is None
-
-    def test_forced_process_termination(self, stubborn_app_path: Path) -> None:
-        self.desktop_driver.launch_process(cmd=["python", str(stubborn_app_path)])
-
-        self.desktop_driver.window = self.desktop_driver.find_window(
+        self.desktop_driver.wait_for_window_to_disappear(
             title=re.compile(f"^{re.escape(self.test_case_name)}$"),
             timeout=5,
         )
 
-        assert self.desktop_driver.process is not None
-        assert self.desktop_driver.window is not None
+    def test_window_should_not_exist_but_does(self, dummy_app_path: Path) -> None:
+        self.desktop_driver.launch_process(cmd=["python", str(dummy_app_path)])
+
+        self.desktop_driver.window = self.desktop_driver.find_window(
+            title=re.compile(f"^{re.escape(self.test_case_name)}$"),
+            timeout=3,
+        )
+        with pytest.raises(ExceptionUnexpectedWindowFound):
+            self.desktop_driver.wait_for_window_to_disappear(
+                title=re.compile(f"^{re.escape(self.test_case_name)}$"),
+                timeout=3,
+            )
 
         self.desktop_driver.close(OS_PROCESS_KILL_TIMEOUT=OS_PROCESS_KILL_TIMEOUT)
-
-        assert self.desktop_driver.process is None
-        assert self.desktop_driver.window is None
