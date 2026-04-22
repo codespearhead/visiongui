@@ -15,7 +15,7 @@
 
 ## What's this project?
 
-This is a hard fork of an internal library I created for ScrapeGrid, an internal project which has been in production since September 2025. It was developed to enable ScrapeGrid to interact with SAJ, a desktop application developed by Softplan and one of the main information systems used by the Brazilian Judiciary. The library itself is system-agnostic and can be used with other desktop applications, as it relies on image recognition rather than direct integration. The only changes in the first commit are to the import statements to make the project standalone, enabling independent evolution and reducing maintenance overhead and complexity in ScrapeGrid.
+This is a hard fork of an internal library I created for ScrapeGrid, an internal project which has been in production since September 2025. It was developed to enable ScrapeGrid to interact with SAJ, a desktop application developed by Softplan and one of the main information systems used by the Brazilian Judiciary. However, SAJ presents several issues, such as frequent screen flickering during page rendering that lasts for a few seconds before the interface becomes ready for interaction, which led to the creation of this library. The library itself is system-agnostic and can be used with other desktop applications, as it relies on image recognition rather than direct integration. The only changes in the first commit are to the import statements to make the project standalone, enabling independent evolution and reducing maintenance overhead and complexity in ScrapeGrid.
 
 
 ## Why not use PyAutoGUI?
