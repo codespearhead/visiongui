@@ -66,7 +66,6 @@ root.mainloop()
         self.desktop_driver.window = self.desktop_driver.find_window(
             title=re.compile(f"^{re.escape(self.test_case_name)}$"),
             timeout=5,
-            should_exist=True,
         )
 
         assert self.desktop_driver.window is not None

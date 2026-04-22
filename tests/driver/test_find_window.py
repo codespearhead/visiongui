@@ -20,7 +20,6 @@ from visiongui.driver.DesktopDriverInterface import (
     DesktopDriverInterface,
 )
 from visiongui.driver.exception import (
-    ExceptionUnexpectedWindowFound,
     ExceptionWindowNotFound,
 )
 
@@ -71,42 +70,7 @@ class TestFindWindow:
             self.desktop_driver.find_window(
                 title=re.compile(f"^{re.escape(self.test_case_name)}$"),
                 timeout=1,
-                should_exist=True,
             )
-
-    def test_window_should_disappear_and_does(self, dummy_app_path: Path) -> None:
-        self.desktop_driver.launch_process(cmd=["python", str(dummy_app_path)])
-
-        self.desktop_driver.window = self.desktop_driver.find_window(
-            title=re.compile(f"^{re.escape(self.test_case_name)}$"),
-            timeout=3,
-            should_exist=True,
-        )
-
-        self.desktop_driver.close(OS_PROCESS_KILL_TIMEOUT=OS_PROCESS_KILL_TIMEOUT)
-
-        self.desktop_driver.find_window(
-            title=re.compile(f"^{re.escape(self.test_case_name)}$"),
-            timeout=5,
-            should_exist=False,
-        )
-
-    def test_window_should_not_exist_but_does(self, dummy_app_path: Path) -> None:
-        self.desktop_driver.launch_process(cmd=["python", str(dummy_app_path)])
-
-        self.desktop_driver.window = self.desktop_driver.find_window(
-            title=re.compile(f"^{re.escape(self.test_case_name)}$"),
-            timeout=3,
-            should_exist=True,
-        )
-        with pytest.raises(ExceptionUnexpectedWindowFound):
-            self.desktop_driver.find_window(
-                title=re.compile(f"^{re.escape(self.test_case_name)}$"),
-                timeout=3,
-                should_exist=False,
-            )
-
-        self.desktop_driver.close(OS_PROCESS_KILL_TIMEOUT=OS_PROCESS_KILL_TIMEOUT)
 
     def test_window_found_within_timeout(self, dummy_app_path: Path) -> None:
         self.desktop_driver.launch_process(cmd=["python", str(dummy_app_path)])
@@ -114,7 +78,6 @@ class TestFindWindow:
         self.desktop_driver.window = self.desktop_driver.find_window(
             title=re.compile(f"^{re.escape(self.test_case_name)}$"),
             timeout=5,
-            should_exist=True,
         )
         assert self.desktop_driver.window is not None
         assert self.desktop_driver.window.title == self.test_case_name
@@ -128,13 +91,11 @@ class TestFindWindow:
             self.desktop_driver.find_window(
                 title=re.compile(f"^{re.escape(self.test_case_name)} - Extra$"),
                 timeout=3,
-                should_exist=True,
             )
 
         self.desktop_driver.window = self.desktop_driver.find_window(
             title=re.compile(f"^{re.escape(self.test_case_name)}$"),
             timeout=5,
-            should_exist=True,
         )
 
         self.desktop_driver.close(OS_PROCESS_KILL_TIMEOUT=OS_PROCESS_KILL_TIMEOUT)
@@ -145,7 +106,6 @@ class TestFindWindow:
         self.desktop_driver.window = self.desktop_driver.find_window(
             title=re.compile(f"^{re.escape(self.test_case_name)}$"),
             timeout=5,
-            should_exist=True,
         )
         assert self.desktop_driver.window is not None
         assert self.desktop_driver.window.title == self.test_case_name

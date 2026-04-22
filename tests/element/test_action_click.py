@@ -81,7 +81,6 @@ root.mainloop()
         desktop_window = self.desktop_driver.find_window(
             title=re.compile(f"^{re.escape(self.test_case_name)}$"),
             timeout=5,
-            should_exist=True,
         )
         self.desktop_driver.switch_to(target_window=desktop_window)
 
