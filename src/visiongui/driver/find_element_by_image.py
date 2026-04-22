@@ -26,8 +26,8 @@ logger = logging.getLogger(__name__)
 
 def _is_stable(
     get_current_location: Callable[[], DesktopElementImplementation | bool],
-    timeout: int,
-    time_held_stable_on_screen: int,
+    timeout: float,
+    time_held_stable_on_screen: float,
 ) -> DesktopElementImplementation:
     start_time = time.time()
     last_location: DesktopElementImplementation | None = None
@@ -120,11 +120,11 @@ def _match_template(
 
 def find_element_by_image(
     image_path: str,
-    timeout: int,
+    timeout: float,
     log_image_name: str,
     debug_output_base_path: str,
     margin_of_error: float,
-    time_held_stable_on_screen: int,
+    time_held_stable_on_screen: float,
     match_with_color: bool = False,
 ) -> DesktopElementImplementation:
     if not image_path or not os.path.isfile(image_path):

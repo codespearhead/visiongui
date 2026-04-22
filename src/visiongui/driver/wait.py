@@ -8,7 +8,7 @@ T = TypeVar("T")
 
 
 class WebDriverWait:
-    def __init__(self, timeout: int, poll_frequency: float = 0.1):
+    def __init__(self, timeout: float, poll_frequency: float = 0.1):
         self.timeout = timeout
         self.poll_frequency = poll_frequency
 

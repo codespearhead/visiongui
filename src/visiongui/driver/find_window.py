@@ -26,7 +26,7 @@ def _get_matching_window(title: re.Pattern[str]) -> pywinctl.Window | None:
 
 def find_window(
     title: re.Pattern[str],
-    timeout: int,
+    timeout: float,
 ) -> pywinctl.Window:
     def _window_check() -> pywinctl.Window | None:
         return _get_matching_window(title)

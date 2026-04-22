@@ -34,7 +34,7 @@ class DesktopDriverInterface(ABC):
         self,
         *,
         title: re.Pattern[str],
-        timeout: int,
+        timeout: float,
     ) -> pywinctl.Window: ...
 
     @abstractmethod
@@ -42,7 +42,7 @@ class DesktopDriverInterface(ABC):
         self,
         *,
         title: re.Pattern[str],
-        timeout: int,
+        timeout: float,
     ) -> None: ...
 
     @abstractmethod
@@ -52,7 +52,7 @@ class DesktopDriverInterface(ABC):
     def close(
         self,
         *,
-        OS_PROCESS_KILL_TIMEOUT: int,
+        OS_PROCESS_KILL_TIMEOUT: float,
     ) -> None: ...
 
     @abstractmethod
@@ -60,10 +60,10 @@ class DesktopDriverInterface(ABC):
         self,
         *,
         image_path: str,
-        timeout: int,
+        timeout: float,
         log_image_name: str,
-        margin_of_error: int,
-        time_held_stable_on_screen: int,
+        margin_of_error: float,
+        time_held_stable_on_screen: float,
         debug_output_base_path: str,
         match_with_color: bool = False,
     ) -> DesktopElementInterface: ...

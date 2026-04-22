@@ -48,7 +48,7 @@ class DesktopDriverWindowsImplementation(DesktopDriverInterface):
         self,
         *,
         title: re.Pattern[str],
-        timeout: int,
+        timeout: float,
     ) -> pywinctl.Window:
         return find_window(
             title=title,
@@ -59,7 +59,7 @@ class DesktopDriverWindowsImplementation(DesktopDriverInterface):
         self,
         *,
         title: re.Pattern[str],
-        timeout: int,
+        timeout: float,
     ) -> None:
         return wait_for_window_to_disappear(
             title=title,
@@ -70,10 +70,10 @@ class DesktopDriverWindowsImplementation(DesktopDriverInterface):
         self,
         *,
         image_path: str,
-        timeout: int,
+        timeout: float,
         log_image_name: str,
-        margin_of_error: int,
-        time_held_stable_on_screen: int,
+        margin_of_error: float,
+        time_held_stable_on_screen: float,
         debug_output_base_path: str,
         match_with_color: bool = False,
     ) -> DesktopElementInterface:
@@ -98,7 +98,7 @@ class DesktopDriverWindowsImplementation(DesktopDriverInterface):
     def close(
         self,
         *,
-        OS_PROCESS_KILL_TIMEOUT: int,
+        OS_PROCESS_KILL_TIMEOUT: float,
     ) -> None:
         close(
             self,

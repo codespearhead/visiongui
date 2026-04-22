@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 
 def close(
     driver: DesktopDriverInterface,
-    OS_PROCESS_KILL_TIMEOUT: int,
+    OS_PROCESS_KILL_TIMEOUT: float,
 ) -> None:
     if not isinstance(driver, DesktopDriverInterface):
         raise TypeError("Expected driver to be an instance of DesktopDriver")
