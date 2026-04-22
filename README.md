@@ -6,7 +6,7 @@
     <img src="https://cdn-icons-png.flaticon.com/512/4695/4695312.png" width="120px" height="120px"/>
   </a>
   <br><br>
-    OpenCV-powered desktop automation tool
+    Resilient OpenCV-powered automation for desktop applications with unstable UI rendering
   <br>
 </p>
 
