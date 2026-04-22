@@ -41,6 +41,7 @@ files = ["src"]
 mypy_path = 'src'
 explicit_package_bases = true
 strict = true
+warn_unused_ignores = false
 exclude = '(\.venv|build|dist)'
 
 [build-system]
