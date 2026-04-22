@@ -1,6 +1,7 @@
 import os
 import re
 from collections.abc import Generator
+from typing import Any
 
 import pytest
 import pywinctl
@@ -24,13 +25,13 @@ OS_PROCESS_KILL_TIMEOUT = int(os.environ["OS_PROCESS_KILL_TIMEOUT"])
 
 
 @pytest.fixture(scope="function", autouse=True)
-def setup(request: FixtureRequest) -> Generator[None]:
+def setup(request: FixtureRequest) -> Generator[None, None, None]:
     self: HasTestContextDesktopDriver = request.instance
     setup_common_paths(request)
     self.desktop_driver = DesktopDriverWindowsImplementation()
     node: Node = request.node
     self.test_case_name = node.name
-    return
+    yield
 
 
 class TestSwitchTo:
@@ -39,12 +40,14 @@ class TestSwitchTo:
     test_suite_output_dir: str
 
     def test_switch_to_raises_on_invalid_type(self) -> None:
+        invalid_target: Any = "not a window object"
         with pytest.raises(TypeError):
-            self.desktop_driver.switch_to(target_window="not a window object")
+            self.desktop_driver.switch_to(target_window=invalid_target)
 
     def test_switch_to_raises_on_none(self) -> None:
+        invalid_target: Any = None
         with pytest.raises(TypeError):
-            self.desktop_driver.switch_to(target_window=None)
+            self.desktop_driver.switch_to(target_window=invalid_target)
 
     def test_switch_to_activates_window(self) -> None:
         gui_code_snippet = f"""
