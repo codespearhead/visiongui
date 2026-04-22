@@ -8,21 +8,21 @@ from _pytest.fixtures import FixtureRequest
 from _pytest.nodes import Node
 from pynput.mouse import Button
 
-from src.visiongui.save_file import save_file
+from visiongui.save_file import save_file
 from tests.fixtures.HasTestContextDesktopDriver import (
     HasTestContextDesktopDriver,
 )
 from tests.fixtures.setup_common_paths import setup_common_paths
-from src.visiongui.driver.DesktopDriverWindowsImplementation import (
+from visiongui.driver.DesktopDriverWindowsImplementation import (
     DesktopDriverWindowsImplementation,
 )
-from src.visiongui.driver.DesktopDriverInterface import (
+from visiongui.driver.DesktopDriverInterface import (
     DesktopDriverInterface,
 )
-from src.visiongui.element.ActionClickOptions import (
+from visiongui.element.ActionClickOptions import (
     ActionClickOptions,
 )
-from src.visiongui.element.ClickOverlayOptions import (
+from visiongui.element.ClickOverlayOptions import (
     ClickOverlayOptions,
 )
 
