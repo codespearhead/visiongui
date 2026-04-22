@@ -48,7 +48,7 @@ jobs:
               - 'Dockerfile'
               - '.github/workflows/ci.yml'
 
-  lint:
+  format_and_lint:
     timeout-minutes: 3
     runs-on: ubuntu-latest
 
@@ -95,7 +95,7 @@ jobs:
       - name: Install dependencies
         run: |
           source .venv/bin/activate
-          poetry install --no-root --with format
+          poetry install --no-root --with format,lint
 
       - name: Check for successful installation
         run: |
@@ -106,3 +106,8 @@ jobs:
         run: |
           source .venv/bin/activate
           poetry run python tasks/format.py --dry-run
+
+      - name: Format and lint project
+        run: |
+          source .venv/bin/activate
+          poetry run mypy

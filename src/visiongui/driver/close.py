@@ -16,7 +16,11 @@ def close(
     if not isinstance(driver, DesktopDriverInterface):
         raise TypeError("Expected driver to be an instance of DesktopDriver")
 
-    pid = driver.window.getPID()
+    window = driver.window
+    pid = None
+    if window is not None:
+        pid = window.getPID()
+
     logger.debug(f"Forcefully killing process owning the window: {pid}")
     proc = psutil.Process(pid)
     proc.terminate()

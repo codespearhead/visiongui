@@ -11,8 +11,8 @@ logger = logging.getLogger(__name__)
 
 
 def wait_for_window_to_disappear(
-    title: re.Pattern,
-    timeout: float,
+    title: re.Pattern[str],
+    timeout: int,
 ) -> None:
     def _window_check() -> bool:
         return _get_matching_window(title) is None

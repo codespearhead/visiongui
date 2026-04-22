@@ -1,6 +1,7 @@
 import logging
 import os
 import time
+from typing import Callable
 
 import cv2
 import numpy as np
@@ -23,18 +24,22 @@ from visiongui.element.DesktopElementImplementation import (
 logger = logging.getLogger(__name__)
 
 
-def _is_stable(get_current_location, timeout, time_held_stable_on_screen):
+def _is_stable(
+    get_current_location: Callable[[], DesktopElementImplementation | bool],
+    timeout: int,
+    time_held_stable_on_screen: int,
+) -> DesktopElementImplementation:
     start_time = time.time()
-    last_location = None
+    last_location: DesktopElementImplementation | None = None
     stable_start = None
     found_once = False
 
     while time.time() - start_time < timeout:
         current_location = get_current_location()
-        if current_location:
+        if isinstance(current_location, DesktopElementImplementation):
             found_once = True
             if (
-                last_location
+                last_location is not None
                 and current_location.top_left == last_location.top_left
                 and current_location.bottom_right == last_location.bottom_right
             ):
@@ -60,7 +65,13 @@ def _is_stable(get_current_location, timeout, time_held_stable_on_screen):
     raise ExceptionElementNotFound(timeout=timeout)
 
 
-def _match_template(template, margin_of_error, monitor, screen_image, mask=None):
+def _match_template(
+    template: np.ndarray,
+    margin_of_error: float,
+    monitor: dict[str, int],
+    screen_image: np.ndarray,
+    mask: np.ndarray | None = None,
+) -> DesktopElementImplementation | bool:
     # Ensure screen image has same number of channels as template
     if len(template.shape) == 2:
         if len(screen_image.shape) == 3:
@@ -109,11 +120,11 @@ def _match_template(template, margin_of_error, monitor, screen_image, mask=None)
 
 def find_element_by_image(
     image_path: str,
-    timeout: float,
+    timeout: int,
     log_image_name: str,
     debug_output_base_path: str,
     margin_of_error: float,
-    time_held_stable_on_screen: float,
+    time_held_stable_on_screen: int,
     match_with_color: bool = False,
 ) -> DesktopElementImplementation:
     if not image_path or not os.path.isfile(image_path):
@@ -121,6 +132,9 @@ def find_element_by_image(
 
     # [68566fb0-e936-48e3-8c87-c5b8735567df] If the image has an alpha channel, extract it to build a binary mask. This mask ensures that only opaque regions of the template are matched, ignoring transparent padding.
     image = cv2.imread(image_path, cv2.IMREAD_UNCHANGED)
+    if image is None:
+        raise ValueError(f"Unable to read image at {image_path}")
+
     mask = None
     template = None
     if len(image.shape) == 3 and image.shape[2] == 4:
@@ -154,7 +168,7 @@ def find_element_by_image(
         with mss() as sct:
             monitor = sct.monitors[1]
 
-            def get_current_location():
+            def get_current_location() -> DesktopElementImplementation | bool:
                 screenshot = sct.grab(monitor)
                 screen_image = np.array(screenshot)
                 return _match_template(
@@ -173,10 +187,12 @@ def find_element_by_image(
                 )
                 return result
             try:
-                result = WebDriverWait(timeout).until(
+                wait_result = WebDriverWait(timeout).until(
                     condition=get_current_location,
                 )
-                return result
+                if not isinstance(wait_result, DesktopElementImplementation):
+                    raise ExceptionElementNotFound(timeout=timeout)
+                return wait_result
             except ExceptionTimeout:
                 save_debug_screenshot(
                     image_file_name_prefix=FileNamePrefix.FAIL,

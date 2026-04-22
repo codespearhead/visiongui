@@ -2,7 +2,7 @@ import os
 import subprocess
 
 
-def launch_process(cmd: list[str]) -> subprocess.Popen:
+def launch_process(cmd: list[str]) -> subprocess.Popen[bytes]:
     if not cmd:
         raise ValueError("Command list must not be empty")
 
