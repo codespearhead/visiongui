@@ -24,12 +24,24 @@ test = [
 format = [
     "ruff (>=0.15.7,<0.16.0)"
 ]
+lint = [
+    "mypy (>=1.20.1,<2.0.0)",
+    "types-pynput (>=1.8.1.20260408,<2.0.0.0)",
+    "types-psutil (>=7.2.2.20260408,<8.0.0.0)"
+]
 
 
 [tool.poetry]
 packages = [
     { include = "visiongui", from = "src" }
 ]
+
+[tool.mypy]
+files = ["src"]
+mypy_path = 'src'
+explicit_package_bases = true
+strict = true
+exclude = '(\.venv|build|dist)'
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]

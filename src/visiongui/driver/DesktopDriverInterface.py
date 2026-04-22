@@ -1,3 +1,4 @@
+import re
 import subprocess
 from abc import ABC, abstractmethod
 
@@ -11,11 +12,11 @@ from visiongui.element.DesktopElementInterface import (
 class DesktopDriverInterface(ABC):
     @property
     @abstractmethod
-    def process(self) -> subprocess.Popen | None: ...
+    def process(self) -> subprocess.Popen[bytes] | None: ...
 
     @process.setter
     @abstractmethod
-    def process(self, value: subprocess.Popen | None) -> None: ...
+    def process(self, value: subprocess.Popen[bytes] | None) -> None: ...
 
     @property
     @abstractmethod
@@ -26,22 +27,22 @@ class DesktopDriverInterface(ABC):
     def window(self, value: pywinctl.Window | None) -> None: ...
 
     @abstractmethod
-    def launch_process(self, *, cmd: list[str]) -> subprocess.Popen: ...
+    def launch_process(self, *, cmd: list[str]) -> subprocess.Popen[bytes]: ...
 
     @abstractmethod
     def find_window(
         self,
         *,
-        title,
-        timeout: float,
+        title: re.Pattern[str],
+        timeout: int,
     ) -> pywinctl.Window: ...
 
     @abstractmethod
     def wait_for_window_to_disappear(
         self,
         *,
-        title,
-        timeout: float,
+        title: re.Pattern[str],
+        timeout: int,
     ) -> None: ...
 
     @abstractmethod
@@ -59,10 +60,10 @@ class DesktopDriverInterface(ABC):
         self,
         *,
         image_path: str,
-        timeout: float,
+        timeout: int,
         log_image_name: str,
-        margin_of_error: float,
-        time_held_stable_on_screen: float,
+        margin_of_error: int,
+        time_held_stable_on_screen: int,
         debug_output_base_path: str,
         match_with_color: bool = False,
     ) -> DesktopElementInterface: ...

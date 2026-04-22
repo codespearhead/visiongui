@@ -1,5 +1,6 @@
 import threading
 import tkinter as tk
+from typing import cast
 
 from visiongui.element.ClickOverlayOptions import (
     ClickOverlayOptions,
@@ -7,7 +8,7 @@ from visiongui.element.ClickOverlayOptions import (
 
 
 def click_overlay(x: int, y: int, options: ClickOverlayOptions) -> None:
-    def _show():
+    def _show() -> None:
         overlay = tk.Tk()
         overlay.overrideredirect(True)
         overlay.attributes("-topmost", True)
@@ -40,7 +41,7 @@ def click_overlay(x: int, y: int, options: ClickOverlayOptions) -> None:
         shaft_bottom_right = (mid_x + shaft_half_width, arrow_height)
         shaft_bottom_left = (mid_x - shaft_half_width, arrow_height)
 
-        points = [
+        points: list[tuple[float, float]] = [
             arrowhead_tip,
             arrowhead_left,
             shaft_top_left,
@@ -51,7 +52,10 @@ def click_overlay(x: int, y: int, options: ClickOverlayOptions) -> None:
         ]
 
         canvas.create_polygon(
-            [tuple(round(coord) for coord in point) for point in points],
+            cast(
+                list[tuple[int, int]],
+                [tuple(round(coord) for coord in point) for point in points],
+            ),
             fill=options.fill_color,
             outline=options.border_color,
             width=options.border_width,

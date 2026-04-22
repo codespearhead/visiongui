@@ -1,3 +1,4 @@
+import re
 import subprocess
 
 import pywinctl
@@ -19,16 +20,16 @@ from visiongui.element.DesktopElementInterface import (
 
 
 class DesktopDriverWindowsImplementation(DesktopDriverInterface):
-    def __init__(self):
-        self._process: subprocess.Popen | None = None
+    def __init__(self) -> None:
+        self._process: subprocess.Popen[bytes] | None = None
         self._window: pywinctl.Window | None = None
 
     @property
-    def process(self) -> subprocess.Popen | None:
+    def process(self) -> subprocess.Popen[bytes] | None:
         return self._process
 
     @process.setter
-    def process(self, value: subprocess.Popen | None) -> None:
+    def process(self, value: subprocess.Popen[bytes] | None) -> None:
         self._process = value
 
     @property
@@ -39,15 +40,15 @@ class DesktopDriverWindowsImplementation(DesktopDriverInterface):
     def window(self, value: pywinctl.Window | None) -> None:
         self._window = value
 
-    def launch_process(self, *, cmd: list[str]) -> subprocess.Popen:
+    def launch_process(self, *, cmd: list[str]) -> subprocess.Popen[bytes]:
         self.process = launch_process(cmd=cmd)
         return self.process
 
     def find_window(
         self,
         *,
-        title,
-        timeout: float,
+        title: re.Pattern[str],
+        timeout: int,
     ) -> pywinctl.Window:
         return find_window(
             title=title,
@@ -57,8 +58,8 @@ class DesktopDriverWindowsImplementation(DesktopDriverInterface):
     def wait_for_window_to_disappear(
         self,
         *,
-        title,
-        timeout: float,
+        title: re.Pattern[str],
+        timeout: int,
     ) -> None:
         return wait_for_window_to_disappear(
             title=title,
@@ -69,10 +70,10 @@ class DesktopDriverWindowsImplementation(DesktopDriverInterface):
         self,
         *,
         image_path: str,
-        timeout: float,
+        timeout: int,
         log_image_name: str,
-        margin_of_error: float,
-        time_held_stable_on_screen: float,
+        margin_of_error: int,
+        time_held_stable_on_screen: int,
         debug_output_base_path: str,
         match_with_color: bool = False,
     ) -> DesktopElementInterface:

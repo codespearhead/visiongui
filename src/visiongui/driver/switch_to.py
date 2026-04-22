@@ -4,8 +4,11 @@ import platform
 
 
 def _set_foreground_hwnd(hwnd: int) -> None:
-    user32 = ctypes.WinDLL("user32", use_last_error=True)
-    kernel32 = ctypes.WinDLL("kernel32", use_last_error=True)
+    if platform.system() != "Windows":
+        raise RuntimeError("This function is only supported on Windows")
+
+    user32 = ctypes.WinDLL("user32", use_last_error=True)  # type: ignore[attr-defined]
+    kernel32 = ctypes.WinDLL("kernel32", use_last_error=True)  # type: ignore[attr-defined]
     GetForegroundWindow = user32.GetForegroundWindow
     GetWindowThreadProcessId = user32.GetWindowThreadProcessId
     GetCurrentThreadId = kernel32.GetCurrentThreadId

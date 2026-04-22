@@ -129,3 +129,9 @@ poetry run pytest -rfsxE --capture=no --log-cli-level=DEBUG --maxfail=1 -vv ./te
 ```bash
 poetry run python ./tasks/format.py
 ```
+
+#### Code Linting
+
+```bash
+poetry run mypy
+```

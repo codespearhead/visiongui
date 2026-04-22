@@ -15,7 +15,7 @@ def save_debug_screenshot(
     image_file_name_prefix: FileNamePrefix,
     log_image_name: str,
     debug_output_base_path: str,
-):
+) -> None:
     file_binary = take_screenshot()
     file_name = f"{image_file_name_prefix.value}_{int(time.time())}_{os.path.basename(log_image_name)}.png"
     save_file(

@@ -10,8 +10,8 @@ from visiongui.driver.wait import WebDriverWait
 logger = logging.getLogger(__name__)
 
 
-def _get_matching_window(title: re.Pattern) -> pywinctl.Window | None:
-    all_windows = pywinctl.getAllWindows()
+def _get_matching_window(title: re.Pattern[str]) -> pywinctl.Window | None:
+    all_windows = pywinctl.getAllWindows()  # type: ignore[no-untyped-call]
     titles = [window.title for window in all_windows if window.title.strip()]
     logger.debug(f"Checking all window titles: {titles}")
 
@@ -25,8 +25,8 @@ def _get_matching_window(title: re.Pattern) -> pywinctl.Window | None:
 
 
 def find_window(
-    title: re.Pattern,
-    timeout: float,
+    title: re.Pattern[str],
+    timeout: int,
 ) -> pywinctl.Window:
     def _window_check() -> pywinctl.Window | None:
         return _get_matching_window(title)

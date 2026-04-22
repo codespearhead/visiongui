@@ -34,5 +34,4 @@ def action_type(
         wait = WebDriverWait(timeout=2)
         wait.until(
             condition=lambda: web_element.get_text() == text_to_type,
-            error_message=f"Element text did not match expected '{text_to_type}' after typing",
         )
