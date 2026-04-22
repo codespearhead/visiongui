@@ -42,13 +42,13 @@ OS_PROCESS_KILL_TIMEOUT = int(os.environ["OS_PROCESS_KILL_TIMEOUT"])
 
 
 @pytest.fixture(scope="function", autouse=True)
-def setup(request: FixtureRequest) -> Generator[None]:
+def setup(request: FixtureRequest) -> Generator[None, None, None]:
     self: HasTestContextDesktopDriver = request.instance
     setup_common_paths(request)
     self.desktop_driver = DesktopDriverWindowsImplementation()
     node: Node = request.node
     self.test_case_name = node.name
-    return
+    yield
 
 
 class TestFindElementByImage:
@@ -56,7 +56,7 @@ class TestFindElementByImage:
     test_case_name: str
     test_suite_output_dir: str
 
-    def test_match_with_color_param(self):
+    def test_match_with_color_param(self) -> None:
         gui_code_snippet = f"""
 import tkinter as tk
 root = tk.Tk()
@@ -105,7 +105,7 @@ root.mainloop()
 
         self.desktop_driver.close(OS_PROCESS_KILL_TIMEOUT=OS_PROCESS_KILL_TIMEOUT)
 
-    def test_image_detected_by_template_matching(self):
+    def test_image_detected_by_template_matching(self) -> None:
         gui_code_snippet = f"""
 import tkinter as tk
 root = tk.Tk()
@@ -138,7 +138,7 @@ root.mainloop()
 
         self.desktop_driver.close(OS_PROCESS_KILL_TIMEOUT=OS_PROCESS_KILL_TIMEOUT)
 
-    def test_image_detected_with_altered_colors(self):
+    def test_image_detected_with_altered_colors(self) -> None:
         gui_code_snippet = f"""
 import tkinter as tk
 root = tk.Tk()
@@ -171,7 +171,7 @@ root.mainloop()
 
         self.desktop_driver.close(OS_PROCESS_KILL_TIMEOUT=OS_PROCESS_KILL_TIMEOUT)
 
-    def test_element_detected_after_motion_stops(self):
+    def test_element_detected_after_motion_stops(self) -> None:
         gui_code_snippet = f"""
 import tkinter as tk, time, threading
 root = tk.Tk()
@@ -213,7 +213,7 @@ root.mainloop()
 
         self.desktop_driver.close(OS_PROCESS_KILL_TIMEOUT=OS_PROCESS_KILL_TIMEOUT)
 
-    def test_element_detected_despite_background_motion(self):
+    def test_element_detected_despite_background_motion(self) -> None:
         gui_code_snippet = f"""
 import tkinter as tk, threading, time
 root = tk.Tk()
@@ -256,7 +256,7 @@ root.mainloop()
 
         self.desktop_driver.close(OS_PROCESS_KILL_TIMEOUT=OS_PROCESS_KILL_TIMEOUT)
 
-    def test_element_detected_but_not_stable(self):
+    def test_element_detected_but_not_stable(self) -> None:
         gui_code_snippet = f"""
 import tkinter as tk, threading, time
 root = tk.Tk()
@@ -299,7 +299,7 @@ root.mainloop()
 
         self.desktop_driver.close(OS_PROCESS_KILL_TIMEOUT=OS_PROCESS_KILL_TIMEOUT)
 
-    def test_element_not_found(self):
+    def test_element_not_found(self) -> None:
         gui_code_snippet = f"""
 import tkinter as tk
 root = tk.Tk()
@@ -332,7 +332,7 @@ root.mainloop()
 
         self.desktop_driver.close(OS_PROCESS_KILL_TIMEOUT=OS_PROCESS_KILL_TIMEOUT)
 
-    def test_click_on_abrir_button_with_alpha_centered_image(self):
+    def test_click_on_abrir_button_with_alpha_centered_image(self) -> None:
         gui_code_snippet = f"""
 import tkinter as tk
 root = tk.Tk()

@@ -3,7 +3,7 @@ import subprocess
 from pathlib import Path
 
 
-def test_quickstart_runs():
+def test_quickstart_runs() -> None:
     script = Path("demo/main.py")
 
     result = subprocess.run(

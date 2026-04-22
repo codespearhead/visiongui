@@ -21,12 +21,12 @@ OS_PROCESS_KILL_TIMEOUT = int(os.environ["OS_PROCESS_KILL_TIMEOUT"])
 
 
 @pytest.fixture(scope="function", autouse=True)
-def setup(request: FixtureRequest) -> Generator[None]:
+def setup(request: FixtureRequest) -> Generator[None, None, None]:
     self: HasTestContextDesktopDriver = request.instance
     self.desktop_driver = DesktopDriverWindowsImplementation()
     node: Node = request.node
     self.test_case_name = node.name
-    return
+    yield
 
 
 @pytest.fixture(scope="function")

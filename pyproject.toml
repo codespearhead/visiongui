@@ -37,7 +37,7 @@ packages = [
 ]
 
 [tool.mypy]
-files = ["src"]
+files = ['src', 'tests']
 mypy_path = 'src'
 explicit_package_bases = true
 strict = true
