@@ -1,4 +1,4 @@
-<h1 align="center"><a href="https://github.com/codespearhead/word-to-pdf-api">VisionGUI</a></h1>
+<h1 align="center"><a href="https://github.com/codespearhead/visiongui">VisionGUI</a></h1>
 
 <p align="center">
     <br>
