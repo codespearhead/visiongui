@@ -1,6 +1,7 @@
 import logging
 
 import psutil
+import win32process
 
 from visiongui.driver.DesktopDriverInterface import (
     DesktopDriverInterface,
@@ -19,7 +20,8 @@ def close(
     window = driver.window
     pid = None
     if window is not None:
-        pid = window.getPID()
+        # Obtain the process ID directly from the window handle via the Win32 API. In some cases, window.getPID() returned invalid process IDs (e.g. negative or nonexistent values), causing psutil.Process(pid) to fail even though the window was still present. GetWindowThreadProcessId() reliably returns the process that owns the window.
+        _, pid = win32process.GetWindowThreadProcessId(window._hWnd)
 
     logger.debug(f"Forcefully killing process owning the window: {pid}")
     proc = psutil.Process(pid)
