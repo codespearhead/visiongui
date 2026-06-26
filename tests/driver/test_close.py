@@ -99,3 +99,29 @@ class TestCloseDesktopDriver:
 
         assert self.desktop_driver.process is None
         assert self.desktop_driver.window is None
+
+    def test_close_uses_window_handle_pid_instead_of_window_getPID(
+        self,
+        dummy_app_path: Path,
+        monkeypatch: pytest.MonkeyPatch,
+    ) -> None:
+        self.desktop_driver.launch_process(cmd=["python", str(dummy_app_path)])
+
+        self.desktop_driver.window = self.desktop_driver.find_window(
+            title=re.compile(f"^{re.escape(self.test_case_name)}$"),
+            timeout=5,
+        )
+
+        assert self.desktop_driver.process is not None
+        assert self.desktop_driver.window is not None
+
+        monkeypatch.setattr(
+            self.desktop_driver.window,
+            "getPID",
+            lambda: -1103552400,
+        )
+
+        self.desktop_driver.close(OS_PROCESS_KILL_TIMEOUT=OS_PROCESS_KILL_TIMEOUT)
+
+        assert self.desktop_driver.process is None
+        assert self.desktop_driver.window is None
