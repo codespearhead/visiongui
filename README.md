@@ -89,7 +89,7 @@ pip install poetry
 2. Install the project in your existing Poetry project:
 
 ```bash
-poetry add git+ssh://git@github.com/codespearhead/visiongui.git#da0a147e0258b260d8b06a26958847406452f769
+poetry add git+ssh://git@github.com/codespearhead/visiongui.git#cca1fa0f4c6213769653ef19105523499a2116b6
 ```
 
 2. Create a file in the root of your project called "main.py" with the contents of file [./demo/main.py](./demo/main.py).
